@@ -1,0 +1,593 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GXploits 2025 - Registration Form</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/x.jpg' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+        }
+        
+        .card-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-field {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #1f2937;
+        }
+        
+        .input-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+        
+        .submit-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+        }
+        
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.6);
+        }
+        
+        .brand-logo {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1f2937;
+            position: relative;
+        }
+        
+        .brand-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-radius: 2px;
+        }
+        
+        .camp-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            position: absolute;
+            top: -15px;
+            right: -30px;
+        }
+        
+        .success-indicator {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .form-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            color: #1f2937;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .floating-element {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .radio-custom {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+            margin-right: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-custom:checked {
+            border-color: #3b82f6;
+            background: #3b82f6;
+        }
+        
+        .radio-custom:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        .form-group select {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #1f2937;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+        }
+        
+        .form-group select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 16px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            accent-color: #3b82f6;
+        }
+        
+        .checkbox-container label {
+            color: #4b5563;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        
+        .checkbox-container a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen py-8 px-4 md:px-8 lg:px-12">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="relative inline-block mb-4">
+                    <h1 class="brand-logo">GXploits</h1>
+                    <span class="camp-badge">Camp Meeting '25</span>
+                </div>
+                
+                <div class="success-indicator">
+                    <i class="fas fa-check-circle"></i>
+                    Payment Successful! Complete your registration below.
+                </div>
+                
+                <div class="mb-6">
+                    <img src="{% static 'images/gxlogo.jpg' %}" alt="GXploits Logo" class="mx-auto h-24 w-auto floating-element">
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-gray-600">Registration Progress</span>
+                    <span class="text-sm font-medium text-blue-600">Step 2 of 2</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="progress-bar w-full"></div>
+                </div>
+            </div>
+            
+            <!-- Registration Form -->
+            <div class="card-glass rounded-3xl p-8 lg:p-10">
+                <form id="registrationForm" method="post" novalidate>
+                    <div class="flex items-center mb-8">
+                        <i class="fas fa-user-plus text-3xl text-blue-500 mr-4"></i>
+                        <h2 class="text-2xl font-bold text-gray-800">Complete Your Registration</h2>
+                    </div>
+
+                  <form method="post" id="registrationForm">
+                     {% csrf_token %}
+                    
+                    <div class="space-y-4">
+                        <!-- Name -->
+                        <div class="form-group">
+                            <label for="{{ form.name.id_for_label }}">
+                                Full Name *
+                            </label>
+                            <input type="text" 
+                                   id="{{ form.name.id_for_label }}" 
+                                   name="{{ form.name.name }}" 
+                                   class="input-field" 
+                                   placeholder="Enter your full name"
+                                   value="{{ form.name.value|default:'' }}"
+                                   required>
+                            {% if form.name.errors %}
+                                <div class="error-message">
+                                    {% for error in form.name.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="form-group">
+                            <label for="{{ form.phone_number.id_for_label }}">
+                                Phone Number *
+                            </label>
+                            <input type="tel" 
+                                   id="{{ form.phone_number.id_for_label }}" 
+                                   name="{{ form.phone_number.name }}" 
+                                   class="input-field" 
+                                   placeholder="Enter your phone number"
+                                   value="{{ form.phone_number.value|default:'' }}"
+                                   required>
+                            {% if form.phone_number.errors %}
+                                <div class="error-message">
+                                    {% for error in form.phone_number.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Date of Birth -->
+                        <div class="form-group">
+                            <label for="{{ form.date_of_birth.id_for_label }}">
+                                Date of Birth *
+                            </label>
+                            <input type="date" 
+                                   id="{{ form.date_of_birth.id_for_label }}" 
+                                   name="{{ form.date_of_birth.name }}" 
+                                   class="input-field" 
+                                   value="{{ form.date_of_birth.value|default:'' }}"
+                                   required>
+                            {% if form.date_of_birth.errors %}
+                                <div class="error-message">
+                                    {% for error in form.date_of_birth.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-group">
+                            <label for="{{ form.gender.id_for_label }}">
+                                Gender *
+                            </label>
+                            <select id="{{ form.gender.id_for_label }}" 
+                                    name="{{ form.gender.name }}" 
+                                    class="input-field" 
+                                    required>
+                                <option value="">Select Gender</option>
+                                {% for value, label in form.gender.field.choices %}
+                                    <option value="{{ value }}" {% if form.gender.value == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.gender.errors %}
+                                <div class="error-message">
+                                    {% for error in form.gender.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Branch -->
+                        <div class="form-group">
+                            <label for="{{ form.branch.id_for_label }}">
+                                Branch *
+                            </label>
+                            <input type="text" 
+                                   id="{{ form.branch.id_for_label }}" 
+                                   name="{{ form.branch.name }}" 
+                                   class="input-field" 
+                                   placeholder="Enter your branch"
+                                   value="{{ form.branch.value|default:'' }}"
+                                   required>
+                            {% if form.branch.errors %}
+                                <div class="error-message">
+                                    {% for error in form.branch.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- District -->
+                         <div class="form-group">
+                            <label for="{{ form.district.id_for_label }}">
+                                District *
+                            </label>
+                            <input type="text" 
+                                   id="{{ form.district.id_for_label }}" 
+                                   name="{{ form.district.name }}" 
+                                   class="input-field" 
+                                   placeholder="Enter your district"
+                                   value="{{ form.district.value|default:'' }}"
+                                   required>
+                            {% if form.district.errors %}
+                                <div class="error-message">
+                                    {% for error in form.district.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                       
+
+                        <!-- Department -->
+                        <div class="form-group">
+                            <label for="{{ form.department.id_for_label }}">
+                                Department *
+                            </label>
+                            <input type="text" 
+                                   id="{{ form.department.id_for_label }}" 
+                                   name="{{ form.department.name }}" 
+                                   class="input-field" 
+                                   placeholder="Enter your department"
+                                   value="{{ form.department.value|default:'' }}"
+                                   required>
+                            {% if form.department.errors %}
+                                <div class="error-message">
+                                    {% for error in form.department.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">
+                                I agree to the <a href="#" class="text-blue-600 underline">terms and conditions</a> *
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button w-full py-4 rounded-xl text-white font-bold text-lg tracking-wide flex items-center justify-center gap-3 mt-8">
+                        <i class="fas fa-check-circle"></i>
+                        Complete Registration
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-8 text-gray-500">
+                <p>&copy; 2025 GXploits Camp Meeting. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Form validation and submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Add loading state
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Completing Registration...';
+            button.disabled = true;
+            
+            // Simulate processing time
+            setTimeout(() => {
+                this.submit();
+            }, 1500);
+        });
+        
+        // Form validation
+        function validateForm() {
+            const requiredFields = ['name', 'phone_number', 'date_of_birth', 'gender', 'branch', 'district', 'department'];
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                const input = document.querySelector(`[name="${field}"]`);
+                if (!input.value.trim()) {
+                    showFieldError(input, 'This field is required');
+                    isValid = false;
+                } else {
+                    clearFieldError(input);
+                }
+            });
+            
+            // Check terms checkbox
+            const terms = document.getElementById('terms');
+            if (!terms.checked) {
+                showNotification('Please accept the terms and conditions', 'error');
+                isValid = false;
+            }
+            
+            // Validate date of birth (must be at least 10 years old)
+            const dobInput = document.querySelector('[name="date_of_birth"]');
+            if (dobInput.value) {
+                const dob = new Date(dobInput.value);
+                const today = new Date();
+                const age = today.getFullYear() - dob.getFullYear();
+                
+                if (age < 10) {
+                    showFieldError(dobInput, 'You must be at least 10 years old');
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        }
+        
+        // Show field error
+        function showFieldError(input, message) {
+            clearFieldError(input);
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            errorDiv.setAttribute('data-error', 'true');
+            
+            input.parentElement.appendChild(errorDiv);
+            input.style.borderColor = '#ef4444';
+        }
+        
+        // Clear field error
+        function clearFieldError(input) {
+            const errorDiv = input.parentElement.querySelector('[data-error="true"]');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+            input.style.borderColor = '#e5e7eb';
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white font-medium z-50 transform transition-all duration-300 ${
+                type === 'error' ? 'bg-red-500' : 'bg-green-500'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // Input animations and real-time validation
+        document.querySelectorAll('.input-field').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('label').style.color = '#3b82f6';
+                clearFieldError(this);
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.querySelector('label').style.color = '#374151';
+                
+                // Real-time validation
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    showFieldError(this, 'This field is required');
+                }
+            });
+        });
+        
+        // Auto-format phone number
+        const phoneInput = document.querySelector('[name="phone_number"]');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) {
+                    value = value.substring(0, 11);
+                }
+                e.target.value = value;
+            });
+        }
+        
+        // Floating animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const floatingElements = document.querySelectorAll('.floating-element');
+            floatingElements.forEach(element => {
+                element.style.animationDelay = Math.random() * 2 + 's';
+            });
+        });
+    </script>
+</body>
+</html>
