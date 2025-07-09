@@ -16,21 +16,22 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, '.env'))
-
+dotenv_path = os.path.join(BASE_DIR, '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
-FLW_SECRET_KEY = os.getenv('FLW_SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key')
+FLW_SECRET_KEY = os.getenv('FLW_SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Gxploits2025.pythonanywhere.com']
-CSRF_TRUSTED_ORIGINS = ['https://Gxploits2025.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'f5d1efb8682f.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://f5d1efb8682f.ngrok-free.app', 'http://localhost:8000']
 
 
 # Application definition
@@ -122,6 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# The directory where static files will be collected
+# This is used when running `collectstatic` command in production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]

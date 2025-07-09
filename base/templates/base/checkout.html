@@ -54,6 +54,12 @@
             box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.6);
         }
         
+        .pay-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .step-indicator {
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
             color: white;
@@ -126,6 +132,31 @@
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background-color: #ef4444;
+        }
+        
+        .notification.success {
+            background-color: #10b981;
         }
     </style>
 </head>
@@ -206,13 +237,14 @@
                     </div>
                     
                     <form id="paymentForm" method="POST" action="https://checkout.flutterwave.com/v3/hosted/pay" class="space-y-6">
+                         {% csrf_token %}
                         <!-- Hidden Static Fields -->
                         <input type="hidden" name="public_key" value="{{ public_key }}" />
                         <input type="hidden" name="tx_ref" value="{{ tx_ref }}" />
                         <input type="hidden" name="amount" value="{{ amount }}" />
                         <input type="hidden" name="currency" value="NGN" />
                         <input type="hidden" name="redirect_url" value="{{ redirect_url }}" />
-                        <input type="hidden" name="payment_options" value="card" />
+                        <input type="hidden" name="payment_options" value="card,banktransfer,ussd" />
                         <input type="hidden" name="customer[name]" id="customerName" />
                         <input type="hidden" name="customer[email]" id="customerEmail" />
                         <input type="hidden" name="customer[phone_number]" id="customerPhone" />
@@ -260,7 +292,7 @@
                         </div>
                         
                         <!-- Payment Button -->
-                        <button type="submit" class="pay-button w-full py-4 rounded-xl text-white font-bold text-lg tracking-wide flex items-center justify-center gap-3">
+                        <button type="submit" id="payButton" class="pay-button w-full py-4 rounded-xl text-white font-bold text-lg tracking-wide flex items-center justify-center gap-3">
                             <i class="fas fa-lock"></i>
                             Complete Payment
                             <i class="fas fa-arrow-right"></i>
@@ -296,13 +328,34 @@
     </div>
     
     <script>
-        // Form validation and submission
-        function fillCustomerFields() {
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // Form validation
+        function validateForm() {
             const name = document.getElementById('nameInput').value.trim();
             const email = document.getElementById('emailInput').value.trim();
             const phone = document.getElementById('phoneInput').value.trim();
             
-            // Basic validation
             if (!name || !email || !phone) {
                 showNotification('Please fill in all required fields', 'error');
                 return false;
@@ -315,59 +368,56 @@
                 return false;
             }
             
-            // Phone validation (basic)
+            // Phone validation
             const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
             if (!phoneRegex.test(phone)) {
                 showNotification('Please enter a valid phone number', 'error');
                 return false;
             }
             
-            // Fill hidden fields
-            document.getElementById('customerName').value = name;
-            document.getElementById('customerEmail').value = email;
-            document.getElementById('customerPhone').value = phone;
-            
-            showNotification('Redirecting to payment gateway...', 'success');
             return true;
         }
         
-        // Show notification
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white font-medium z-50 transform transition-all duration-300 ${
-                type === 'error' ? 'bg-red-500' : 'bg-green-500'
-            }`;
-            notification.textContent = message;
+        // Fill customer data before submission
+        function fillCustomerData() {
+            const name = document.getElementById('nameInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+            const phone = document.getElementById('phoneInput').value.trim();
             
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
+            document.getElementById('customerName').value = name;
+            document.getElementById('customerEmail').value = email;
+            document.getElementById('customerPhone').value = phone;
         }
         
         // Form submission handler
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            if (fillCustomerFields()) {
-                // Add loading state
-                const button = this.querySelector('button[type="submit"]');
-                const originalText = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-                button.disabled = true;
-                
-                // Submit after a short delay
-                setTimeout(() => {
-                    this.submit();
-                }, 1000);
+            // Validate form first
+            if (!validateForm()) {
+                return;
             }
+            
+            // Fill customer data
+            fillCustomerData();
+            
+            // Show loading state
+            const button = document.getElementById('payButton');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            button.disabled = true;
+            
+            // Show notification
+            showNotification('Redirecting to payment gateway...', 'success');
+            
+            // Submit form after a brief delay
+            const form = this;
+            setTimeout(() => {
+                form.submit();
+            }, 500);
         });
         
-        // Input animations
+        // Input field animations
         document.querySelectorAll('.input-field').forEach(input => {
             input.addEventListener('focus', function() {
                 this.parentElement.querySelector('label').style.color = '#3b82f6';
@@ -378,7 +428,7 @@
             });
         });
         
-        // Floating animation for decorative elements
+        // Floating animation initialization
         document.addEventListener('DOMContentLoaded', function() {
             const floatingElements = document.querySelectorAll('.floating-element');
             floatingElements.forEach(element => {
